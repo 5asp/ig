@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"net"
 	"os"
@@ -19,11 +20,24 @@ import (
 
 func main() {
 	var logger log.Logger
-	logger = log.NewJSONLogger(os.Stdout)
-	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
-	logger = log.With(logger, "caller", log.DefaultCaller)
+	{
+		logger = log.NewJSONLogger(os.Stdout)
+		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+		logger = log.With(logger, "caller", log.DefaultCaller)
+	}
 
-	addservice := service.NewService(logger)
+	var db *sql.DB
+	{
+		var err error
+		// Connect to the "ordersdb" database
+		db, err = sql.Open("postgres", "postgresql://shijuvar@localhost:26257/ordersdb?sslmode=disable")
+		if err != nil {
+			level.Error(logger).Log("exit", err)
+			os.Exit(-1)
+		}
+	}
+
+	addservice := service.NewService(db, "", logger)
 	addendpoint := endpoints.MakeEndpoints(addservice)
 	grpcServer := transport.NewGRPCServer(addendpoint, logger)
 
