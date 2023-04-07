@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option go_package = "github.com/aszeta/ig/pb";
+
+service AccountService {
+  rpc Create(LoginRequest) returns (LoginResponse) {}
+  rpc Update(LoginRequest) returns (LoginResponse) {}
+  rpc Read(RegisterRequest) returns (RegisterResponse) {}
+  rpc Delete(LoginRequest) returns (LoginResponse) {}
+  rpc List(LoginRequest) returns (LoginResponse) {}
+}
+
+message RegisterRequest {
+  float numA = 1;
+  float numB = 2;
+}
+
+message RegisterResponse {
+  float result = 1;
+}
