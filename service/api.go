@@ -2,11 +2,14 @@ package service
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/go-kit/kit/log"
 )
 
 type service struct {
+	db     *sql.DB
+	value  string
 	logger log.Logger
 }
 
@@ -16,8 +19,10 @@ type Service interface {
 }
 
 // NewService returns a Service with all of the expected dependencies
-func NewService(logger log.Logger) Service {
+func NewService(db *sql.DB, value string, logger log.Logger) Service {
 	return &service{
+		db:     db,
+		value:  value,
 		logger: logger,
 	}
 }
